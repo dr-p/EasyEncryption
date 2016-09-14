@@ -1,10 +1,12 @@
 package com.chomptech.easyencryption;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -30,67 +32,66 @@ public class MainActivity extends AppCompatActivity {
         mAdView.loadAd(adRequest);
 
         plain = (EditText)findViewById(R.id.editTextPlaintext);
-        ciphertext = (EditText)findViewById(R.id.editTextEncrypted);
         shift = (EditText)findViewById(R.id.editTextShifts);
+
+
+        ciphertext = (EditText)findViewById(R.id.editTextEncrypted);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
 
-
-        plain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (plain.getText().toString().equals("Enter plaintext here")) {
-                    plain.setText("");
-                } else {
-
-                }
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            if (sharedText != null) {
+                plain.setText(sharedText);
             }
-        });
-        shift.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (shift.getText().toString().equals("Enter # shifts here")) {
-                    shift.setText("");
-                } else {
+        }
 
-                }
-            }
-        });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    /*
-    String cipher(String msg, int shift){
-    String s = "";
-    int len = msg.length();
-    for(int x = 0; x < len; x++){
-        char c = (char)(msg.charAt(x) + shift);
-        if (c > 'z')
-            s += (char)(msg.charAt(x) - (26-shift));
-        else
-            s += (char)(msg.charAt(x) + shift);
-    }
-    return s;
-}
-     */
     public void encrypt(View view) {
         String plaint = plain.getText().toString();
         ciphertext.setText(cipher(plaint, Integer.valueOf(shift.getText().toString())));
     }
     public String cipher (String txt, int shift) {
-        String temp = "";
-        int strLength = txt.length();
-        for (int i = 0; i < strLength; i++) {
-            char c = (char)(txt.charAt(i) + shift);
-            if (c > 'z')
-                temp += (char)(txt.charAt(i) - (26-shift));
-            else
-                temp += (char)(txt.charAt(i) + shift);
+        char[] tempBuffer = txt.toLowerCase().toCharArray();
+
+        for (int i = 0; i < tempBuffer.length; i++) {
+            char temp = tempBuffer[i];
+            temp = (char) (temp + shift);
+            if (temp - shift == ' ') {
+                temp = '*';
+            } else if (temp - shift == '*') {
+                temp = ' ';
+            } else {
+                if (temp > 'z') {
+                    temp = (char) (temp - 26);
+                } else if (temp < 'a') {
+                    temp = (char) (temp + 26);
+                }
+            }
+            tempBuffer[i] = temp;
         }
-        return temp;
+        return new String(tempBuffer);
+    }
+    public void shareCipher(MenuItem menuItem) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, ciphertext.getText().toString());
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent, "Share note to..."));
+    }
+    public void clearText(MenuItem menuItem) {
+        shift.setText("");
+        plain.setText("");
+        ciphertext.setText("Encrypted message will appear here");
     }
 }

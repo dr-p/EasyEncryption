@@ -6,15 +6,13 @@
         android:id="@+id/share_button"
         android:icon="@drawable/shareicon"
         android:title="Share"
+        android:onClick="shareCipher"
         app:showAsAction="ifRoom"
-        />
-    <item
-        android:id="@+id/rename_menu"
-        android:title="Rename"
         />
     <item
         android:id="@+id/delete_menu"
         android:title="Delete"
+        android:onClick="clearText"
         app:showAsAction="ifRoom"
         android:icon="@drawable/deleteicon"
         />
