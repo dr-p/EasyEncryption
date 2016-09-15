@@ -2,12 +2,14 @@ package com.chomptech.easyencryption;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.IntegerRes;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.ads.AdRequest;
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText plain;
     private EditText ciphertext;
     private EditText shift;
+    private Button encryptButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         plain = (EditText)findViewById(R.id.editTextPlaintext);
         shift = (EditText)findViewById(R.id.editTextShifts);
+        encryptButton = (Button)findViewById(R.id.buttonEncrypt);
 
 
         ciphertext = (EditText)findViewById(R.id.editTextEncrypted);
@@ -57,12 +61,39 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    public void encrypt(View view) {
-        String plaint = plain.getText().toString();
-        ciphertext.setText(cipher(plaint, Integer.valueOf(shift.getText().toString())));
+    public void encryptSubstitutionShift(View view) {
+        //
+        // int negNums = 0;
+        String key = shift.getText().toString();
+        /*
+        for (int i = 0; i < key.length(); i++) {
+            if (key.charAt(i) == '-') {
+                negNums =+ 1;
+            }
+        }
+        if (negNums > 1) {
+            key.replaceAll("-", "");
+            key = "-" + key;
+        }*/
+        if (key.contains(".")) {
+            key = key.replaceAll(".", "");
+        }
+        if (key.contains("-")) {
+            key = key.replaceAll("-", "");
+            key = "-" + key;
+        }
+        shift.setText(key);
+        if (encryptButton.getText().toString().equals("Encrypt Message")) {
+
+
+            plain.setText(plain.getText().toString().replaceAll("[^a-zA-z ]", "").toLowerCase());
+            ciphertext.setText(cipher(plain.getText().toString(), Integer.valueOf(key)));
+        } else {
+            ciphertext.setText(cipher(plain.getText().toString(), Integer.valueOf(key)));
+        }
     }
     public String cipher (String txt, int shift) {
-        char[] tempBuffer = txt.toLowerCase().toCharArray();
+        char[] tempBuffer = txt.toCharArray();
 
         for (int i = 0; i < tempBuffer.length; i++) {
             char temp = tempBuffer[i];
@@ -93,5 +124,20 @@ public class MainActivity extends AppCompatActivity {
         shift.setText("");
         plain.setText("");
         ciphertext.setText("Encrypted message will appear here");
+        encryptButton.setText("Encrypt Message");
+
+    }
+    public void swapTexts(MenuItem menuItem) {
+        if (!plain.getText().toString().equals("") && !shift.getText().toString().equals("")) {
+            String temp = ciphertext.getText().toString();
+            ciphertext.setText(plain.getText().toString());
+            plain.setText(temp);
+            shift.setText(String.valueOf(-Integer.valueOf(shift.getText().toString())));
+            if (encryptButton.getText().toString().equals("Encrypt Message")) {
+                encryptButton.setText("Decrypt Message");
+            } else {
+                encryptButton.setText("Encrypt Message");
+            }
+        }
     }
 }

@@ -10,6 +10,11 @@
         app:showAsAction="ifRoom"
         />
     <item
+        android:id="@+id/swap_texts"
+        android:title="Swap texts"
+        android:onClick="swapTexts"
+        />
+    <item
         android:id="@+id/delete_menu"
         android:title="Delete"
         android:onClick="clearText"
