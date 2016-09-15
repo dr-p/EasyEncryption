@@ -83,14 +83,12 @@ public class MainActivity extends AppCompatActivity {
             key = "-" + key;
         }
         shift.setText(key);
-        if (encryptButton.getText().toString().equals("Encrypt Message")) {
-
-
-            plain.setText(plain.getText().toString().replaceAll("[^a-zA-z ]", "").toLowerCase());
+        //if (encryptButton.getText().toString().equals("Encrypt Message")) {
+            //plain.setText(plain.getText().toString().replaceAll("[^a-zA-z ]", "").toLowerCase());
+            //ciphertext.setText(cipher(plain.getText().toString(), Integer.valueOf(key)));
+        //} else {
             ciphertext.setText(cipher(plain.getText().toString(), Integer.valueOf(key)));
-        } else {
-            ciphertext.setText(cipher(plain.getText().toString(), Integer.valueOf(key)));
-        }
+        //}
     }
     public String cipher (String txt, int shift) {
         char[] tempBuffer = txt.toCharArray();
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         shift.setText("");
         plain.setText("");
         ciphertext.setText("Encrypted message will appear here");
-        encryptButton.setText("Encrypt Message");
+        //encryptButton.setText("Encrypt Message");
 
     }
     public void swapTexts(MenuItem menuItem) {
@@ -133,11 +131,12 @@ public class MainActivity extends AppCompatActivity {
             ciphertext.setText(plain.getText().toString());
             plain.setText(temp);
             shift.setText(String.valueOf(-Integer.valueOf(shift.getText().toString())));
+            /*
             if (encryptButton.getText().toString().equals("Encrypt Message")) {
                 encryptButton.setText("Decrypt Message");
             } else {
                 encryptButton.setText("Encrypt Message");
-            }
+            }*/
         }
     }
 }
