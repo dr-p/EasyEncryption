@@ -3,18 +3,23 @@ package com.chomptech.easyencryption;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.IntegerRes;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText ciphertext;
     private EditText shift;
     private Button encryptButton;
+    private ArrayList<String> mApps;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +53,18 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
 
+        mApps = new ArrayList<>();
+        mApps.add(getString(R.string.easyaudio));
+        mApps.add(getString(R.string.easynote));
+        mApps.add(getString(R.string.easytip));
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerlay);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mApps));
+
+        // To be implemented custom onclick listener class
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
@@ -54,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 plain.setText(sharedText);
             }
         }
-
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
